@@ -1,0 +1,22 @@
+[package]
+name = "snapcraft-rust-example"
+version = "0.0.1"
+edition = "2021"
+authors = ["Alec Brown <alec@noser.net>"]
+description = "Test application for snapcraft rust library."
+rust-version = "1.58"
+license = "Apache-2.0"
+repository = "https://github.com/a1ecbr0wn/snapcraft/snapcraft-rust-example"
+homepage = "https://github.com/a1ecbr0wn/snapcraft/snapcraft-rust-example"
+readme = "README.md"
+keywords = ["shell", "filesystem", "utility"]
+categories = ["filesystem", "os", "api-bindings"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+path = "src/main.rs"
+name = "snapcraft-rust-example"
+
+[dependencies]
+snapcraft = "0.0.1"
