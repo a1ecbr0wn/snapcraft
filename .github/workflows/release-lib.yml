@@ -41,6 +41,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: publish
+          args: -p snapcraft
 
   # Kick off the workflow for the creation of the snapcraft example
   tag-release-example-init:
