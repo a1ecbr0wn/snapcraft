@@ -4,7 +4,7 @@ name: "tag-release-example"
 on:
   workflow_dispatch:
     inputs:
-      version:
+      example_version:
         description: 'Version number of release'
         required: true
 
@@ -78,7 +78,7 @@ jobs:
       - name: "Upload the artifact with the workflow run"
         uses: actions/upload-artifact@v3
         with:
-          name: snapcraft-rust-example-${{ matrix.TARGET }}-${{ env.version }}
+          name: snapcraft-rust-example-${{ matrix.TARGET }}-${{ env.example_version }}
           path: snapcraft-rust-example-${{ matrix.TARGET }}.*
           retention-days: 1
 
@@ -98,8 +98,8 @@ jobs:
       - name: "Create Example Release"
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          automatic_release_tag: "${{ env.version }}"
-          title: "Release ${{ env.version }}"
+          automatic_release_tag: "${{ env.example_version }}"
+          title: "Release ${{ env.example_version }}"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
@@ -119,4 +119,4 @@ jobs:
           repo: a1ecbr0wn/snapcraft
           ref: refs/heads/main
           workflow: snap.yml
-          inputs: '{ "snap_version": "${{ env.version }}" }'
+          inputs: '{ "snap_version": "${{ env.example_version }}" }'

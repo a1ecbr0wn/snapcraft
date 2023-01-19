@@ -56,4 +56,4 @@ jobs:
           repo: a1ecbr0wn/snapcraft
           ref: refs/heads/main
           workflow: release-example.yml
-          inputs: '{ "version": "${{ github.ref_name }}" }'
+          inputs: '{ "example_version": "${{ github.ref_name }}" }'
