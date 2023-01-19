@@ -1,5 +1,5 @@
 ---
-name: "Generate Snap"
+name: "generate-snap"
 
 on:
   workflow_dispatch:

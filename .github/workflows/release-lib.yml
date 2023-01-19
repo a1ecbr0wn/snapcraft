@@ -1,5 +1,5 @@
 ---
-name: "Tag Release Build"
+name: "tag-release-build"
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  tag-release:
-    name: "Tag Release Build"
+  tag-release-lib-build:
+    name: "tag-release-lib-build"
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
@@ -43,10 +43,10 @@ jobs:
           command: publish
 
   # Kick off the workflow for the creation of the snapcraft example
-  release-example:
+  tag-release-example-init:
     name: "Initiate release of the snapcraft example application"
     runs-on: ubuntu-latest
-    needs: [tag-release]
+    needs: [tag-release-lib-build]
     steps:
       - name: "Repository Dispatch"
         uses: benc-uk/workflow-dispatch@v1
