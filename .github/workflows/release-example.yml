@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Rust Toolchain setup"
         uses: actions-rs/toolchain@v1
@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Toolchain setup"
         uses: actions-rs/toolchain@v1
@@ -67,7 +67,7 @@ jobs:
           args: --release --target=${{ matrix.TARGET }}
 
       - name: "Package Release"
-        run: tar cvzf snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz --directory=snapcraft-rust-example/target/${{ matrix.TARGET }}/release snapcraft-rust-example
+        run: tar cvzf snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz --directory=target/${{ matrix.TARGET }}/release snapcraft-rust-example
 
       - name: "Generate SHA checksum"
         run: shasum -a 256 -U snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz > snapcraft-rust-example-${{ matrix.TARGET }}.sha
@@ -90,12 +90,12 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: "Download all release artifacts from the workflow"
         uses: actions/download-artifact@v3
 
-      - name: "Create CLI Release"
+      - name: "Create Example Release"
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           automatic_release_tag: "${{ env.version }}"
