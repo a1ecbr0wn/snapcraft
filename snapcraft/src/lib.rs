@@ -1,7 +1,7 @@
 use std::env;
 use std::path::{Path, PathBuf};
 
-/// Checks to see whether we are operating within a snap
+/// Checks to see whether we are running within a snap, and if so return the real home directory for the current user.
 pub fn check_snap_home() -> (bool, Option<PathBuf>) {
     if in_snap() {
         (true, snap_real_home())
@@ -10,7 +10,7 @@ pub fn check_snap_home() -> (bool, Option<PathBuf>) {
     }
 }
 
-/// Checks whether it thinks this is running within a snap
+/// Checks whether we are running within a snap
 pub fn in_snap() -> bool {
     snap().is_some()
 }
