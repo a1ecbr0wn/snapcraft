@@ -12,6 +12,10 @@ name: clippy
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
+      - '**/snapcraft.yaml'
   schedule:
     - cron: '0 2 * * 1'
 
