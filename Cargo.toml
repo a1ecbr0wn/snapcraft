@@ -2,4 +2,5 @@
 
 members = [
     "snapcraft",
+    "snapcraft-rust-example",
 ]
