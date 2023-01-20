@@ -5,20 +5,22 @@ base: core20
 version: 'v0.0.5'
 summary: Snapcraft Rust Example
 description: |
-  Snapcraft example application built with the rust snapcraft library that shows output from some of the features
+  Snapcraft example application built with the rust snapcraft crate that shows output from some of the features.
+
+  This is an example application for a Rust crate that provides access to some of the snapcraft environment.
+  The application is an displays the values of a number of 
+  [environment variables](https://snapcraft.io/docs/environment-variables) that your Snap exposes to all contained
+  applications, and is an example of how you can add additional functionality and context if your application has be
+  deployed via Snap.
+
+  For more information on the API, see the crate at [crates.io](https://crates.io/crates/snapcraft) and 
+  [docs.rs](https://docs.rs/snapcraft/latest/snapcraft/).
 
 grade: stable
 confinement: strict
 issues: https://github.com/a1ecbr0wn/snapcraft/issues
+website: https://github.com/a1ecbr0wn/snapcraft
 license: Apache-2.0
-
-architectures:
-  - build-on: amd64
-    run-on: amd64
-  - build-on: arm64
-    run-on: arm64
-  - build-on: armhf
-    run-on: armhf
 
 parts:
   rust-example:
