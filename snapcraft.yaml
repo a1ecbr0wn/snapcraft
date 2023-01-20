@@ -24,8 +24,7 @@ parts:
   rust-example:
     plugin: rust
     source: https://github.com/a1ecbr0wn/snapcraft/archive/refs/tags/v0.0.5.tar.gz
-    rust-path: ["snapcraft-rust-example"]
 
 apps:
   rust-example:
-    command: bin/snapcraft-rust-example
+    command: bin/rust-example
