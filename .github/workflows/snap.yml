@@ -28,12 +28,6 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "debug location"
-        run: |
-          pwd
-          ls -al
-          ls -al template
-
       - name: "Create the snap from the template"
         run: |
           cp template/snapcraft.yaml snapcraft.yaml
