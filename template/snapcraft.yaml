@@ -1,0 +1,30 @@
+title: snapcraft-rust-example
+name: rust-example
+type: app
+base: core20
+version: ':snap_version'
+summary: Snapcraft Rust Example
+description: |
+  Snapcraft example application built with the rust snapcraft library that shows output from some of the features
+
+grade: stable
+confinement: strict
+issues: https://github.com/a1ecbr0wn/snapcraft/issues
+license: Apache-2.0
+
+architectures:
+  - build-on: amd64
+    run-on: amd64
+  - build-on: arm64
+    run-on: arm64
+  - build-on: armhf
+    run-on: armhf
+
+parts:
+  rust-example:
+    plugin: rust
+    source: https://github.com/a1ecbr0wn/snapcraft/archive/refs/tags/:snap_version.tar.gz
+
+apps:
+  rust-example:
+    command: bin/rust-example

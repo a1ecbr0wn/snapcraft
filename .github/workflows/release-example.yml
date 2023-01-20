@@ -86,6 +86,7 @@ jobs:
   tag-release-example-package:
     name: "tag-release-example-linux-package"
     runs-on: "ubuntu-latest"
+    permissions: write-all
     needs: [tag-release-example-linux]
 
     steps:
