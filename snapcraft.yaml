@@ -22,14 +22,6 @@ issues: https://github.com/a1ecbr0wn/snapcraft/issues
 website: https://github.com/a1ecbr0wn/snapcraft
 license: Apache-2.0
 
-architectures:
-  - build-on: amd64
-    run-on: amd64
-  - build-on: arm64
-    run-on: arm64
-  - build-on: armhf
-    run-on: armhf
-
 parts:
   rust-example:
     plugin: rust
