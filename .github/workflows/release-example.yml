@@ -55,16 +55,13 @@ jobs:
       - name: "Test"
         uses: actions-rs/cargo@v1
         with:
-          use-cross: true
           command: test
-          args: --target=${{ matrix.TARGET }}
 
       - name: "Build release"
         uses: actions-rs/cargo@v1
         with:
-          use-cross: true
           command: build
-          args: --release --target=${{ matrix.TARGET }}
+          args: --release
 
       - name: "Package Release"
         run: tar cvzf snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz --directory=target/${{ matrix.TARGET }}/release snapcraft-rust-example

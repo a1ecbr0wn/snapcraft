@@ -1,4 +1,4 @@
-# snapcraft
+# Snapcraft
 
 [![Crates.io](https://img.shields.io/crates/l/snapcraft)](https://github.com/a1ecbr0wn/snapcraft-wmi/blob/main/LICENSE) [![Crates.io](https://img.shields.io/crates/v/snapcraft)](https://crates.io/crates/snapcraft) [![Build Status](https://github.com/a1ecbr0wn/snapcraft/actions/workflows/build.yml/badge.svg)](https://github.com/a1ecbr0wn/snapcraft-wmi/actions/workflows/build.yml) [![docs.rs](https://img.shields.io/docsrs/snapcraft)](https://docs.rs/snapcraft)
 
