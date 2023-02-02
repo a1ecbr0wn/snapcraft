@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
 
@@ -90,13 +91,18 @@ pub fn snap_instance_key() -> Option<String> {
 }
 
 /// Directory with additional system libraries. This variable is used internally by snapcraft.
-/// The value is always `/var/lib/snapd/lib/gl`: Please note the colon at the end of that value,
+/// The value is always `/var/lib/snapd/lib/gl:` Please note the colon at the end of that value,
 /// the variable is a colon-separated list.
 ///
 /// The referenced directory is typically empty unless Nvidia proprietary drivers are in use.
-pub fn snap_library_path() -> Option<PathBuf> {
+pub fn snap_library_path() -> Option<Vec<PathBuf>> {
     if let Ok(snap_real_home) = env::var("SNAP_LIBRARY_PATH") {
-        Some(Path::new(snap_real_home.as_str()).to_path_buf())
+        let snap_lib_paths: Vec<PathBuf> = snap_real_home
+            .split(':')
+            .filter(|x| !x.is_empty())
+            .map(|x| Path::new(x).to_path_buf())
+            .collect();
+        Some(snap_lib_paths)
     } else {
         None
     }
@@ -113,7 +119,8 @@ pub fn snap_name() -> Option<String> {
     }
 }
 
-/// The vanilla `HOME` environment variable before snapd-induced remapping, refer [Any way to acquire the originally set HOME environment variable? - snapcraft - snapcraft.io](https://forum.snapcraft.io/t/any-way-to-acquire-the-originally-set-home-environment-variable/19475)
+/// The vanilla `HOME` environment variable before snapd-induced remapping, refer
+/// [Any way to acquire the originally set HOME environment variable? - snapcraft snapcraft.io](https://forum.snapcraft.io/t/any-way-to-acquire-the-originally-set-home-environment-variable/19475)
 /// for more info.
 ///
 /// Available since `snapd 2.46`.
@@ -139,25 +146,29 @@ pub fn snap_revision() -> Option<String> {
     }
 }
 
-/// This variable is only exposed on [Ubuntu Core](https://snapcraft.io/docs/glossary#heading--ubuntu-core) systems, and was introduced with snapd 2.57.
-/// It points to a snap-specific location on the ubuntu-save partition where the snap is allowed to store persistent files (like certificates or configuration files) that will survive a [factory reset](https://ubuntu.com/core/docs/recovery-modes#heading--factory) of the Ubuntu Core device.
+/// This variable is only exposed on [Ubuntu Core](https://snapcraft.io/docs/glossary#heading--ubuntu-core) systems, and
+/// was introduced with snapd 2.57.   It points to a snap-specific location on the ubuntu-save partition where the snap
+/// is allowed to store persistent files (like certificates or configuration files) that will survive a
+/// [factory reset](https://ubuntu.com/core/docs/recovery-modes#heading--factory) of the Ubuntu Core device.
 ///
-/// See [ubuntu-save](https://ubuntu.com/core/docs/storage-layout#heading--save) in the Ubuntu Core documentation for more details on storage layout with this specific partition.
-pub fn snap_save_data() -> Option<String> {
+/// See [ubuntu-save](https://ubuntu.com/core/docs/storage-layout#heading--save) in the Ubuntu Core documentation for
+/// more details on storage layout with this specific partition.
+pub fn snap_save_data() -> Option<PathBuf> {
     if let Ok(snap_save_data) = env::var("SNAP_SAVE_DATA") {
-        Some(snap_save_data)
+        Some(Path::new(snap_save_data.as_str()).to_path_buf())
     } else {
         None
     }
 }
 
-/// Directory for user data that is common across revisions of a snap.
-/// Unlike `SNAP_DATA`, data present in this directory is not backed up or restored across snap refresh and snap revert operations. The directory is suitable for large data that the application can access even if it was made or modified by a future version of a snap.
+/// Directory for user data that is common across revisions of a snap.   Unlike `SNAP_DATA`, data present in this
+/// directory is not backed up or restored across snap refresh and snap revert operations. The directory is suitable for
+/// large data that the application can access even if it was made or modified by a future version of a snap.
 ///
 /// Typical value `/home/zyga/snap/hello-world/common`
-pub fn snap_user_common() -> Option<String> {
+pub fn snap_user_common() -> Option<PathBuf> {
     if let Ok(snap_user_common) = env::var("SNAP_USER_COMMON") {
-        Some(snap_user_common)
+        Some(Path::new(snap_user_common.as_str()).to_path_buf())
     } else {
         None
     }
@@ -168,9 +179,9 @@ pub fn snap_user_common() -> Option<String> {
 /// Typical value: `/home/zyga/snap/hello-world/27`
 ///
 /// The final number there is `$SNAP_REVISION`.
-pub fn snap_user_data() -> Option<String> {
+pub fn snap_user_data() -> Option<PathBuf> {
     if let Ok(snap_user_data) = env::var("SNAP_USER_DATA") {
-        Some(snap_user_data)
+        Some(Path::new(snap_user_data.as_str()).to_path_buf())
     } else {
         None
     }
@@ -184,5 +195,279 @@ pub fn snap_version() -> Option<String> {
         Some(snap_version)
     } else {
         None
+    }
+}
+
+/// A map of all of the environment variables that start with `SNAP_`
+pub fn snap_env() -> Option<HashMap<String, String>> {
+    let snap_map: HashMap<String, String> = env::vars()
+        .into_iter()
+        .filter(|(k, _)| k.starts_with("SNAP"))
+        .collect();
+    if snap_map.is_empty() {
+        None
+    } else {
+        Some(snap_map)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use serial_test::serial;
+    use std::{env, path::Path};
+
+    fn setup() {
+        env::set_var("SNAP", "/snap/hello-world/27");
+        env::set_var("SNAP_ARCH", "armhf");
+        env::set_var("SNAP_COMMON", "/var/snap/hello-world/common");
+        env::set_var("SNAP_DATA", "/var/snap/hello-world/27");
+        env::set_var("SNAP_INSTANCE_NAME", "hello-world");
+        env::set_var("SNAP_INSTANCE_KEY", "foo");
+        env::set_var("SNAP_LIBRARY_PATH", "/var/lib/snapd/lib/gl:");
+        env::set_var("SNAP_NAME", "hello-world");
+        env::set_var("SNAP_REAL_HOME", "/home/user");
+        env::set_var("SNAP_REVISION", "27");
+        env::set_var("SNAP_SAVE_DATA", "/snap/hello-world/27/save");
+        env::set_var("SNAP_USER_COMMON", "/home/zyga/snap/hello-world/common");
+        env::set_var("SNAP_USER_DATA", "/home/zyga/snap/hello-world/27");
+        env::set_var("SNAP_VERSION", "v1.0.0");
+    }
+
+    fn unsetup() {
+        env::vars()
+            .into_iter()
+            .filter(|(k, _)| k.starts_with("SNAP"))
+            .for_each(|(k, _)| env::remove_var(k));
+    }
+
+    #[test]
+    #[serial]
+    fn snap() {
+        setup();
+        let val = crate::snap();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "/snap/hello-world/27");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn in_snap() {
+        setup();
+        let val = crate::in_snap();
+        assert!(val);
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn not_in_snap() {
+        let val = crate::in_snap();
+        assert!(!val);
+    }
+
+    #[test]
+    #[serial]
+    fn check_snap_home() {
+        setup();
+        let val = crate::check_snap_home();
+        assert!(val.0);
+        assert!(val.1.is_some());
+        assert_eq!(val.1.unwrap(), Path::new("/home/user").to_path_buf());
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn not_check_snap_home() {
+        let val = crate::check_snap_home();
+        assert!(!val.0);
+        assert!(val.1.is_none());
+    }
+
+    #[test]
+    #[serial]
+    fn snap_arch() {
+        setup();
+        let val = crate::snap_arch();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "armhf");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_data() {
+        setup();
+        let val = crate::snap_data();
+        assert!(val.is_some());
+        assert_eq!(
+            val.unwrap(),
+            Path::new("/var/snap/hello-world/27").to_path_buf()
+        );
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_instance_name() {
+        setup();
+        let val = crate::snap_instance_name();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "hello-world");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_instance_key() {
+        setup();
+        let val = crate::snap_instance_key();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "foo");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_library_path() {
+        setup();
+        let val = crate::snap_library_path();
+        assert!(val.is_some());
+        let val = val.unwrap();
+        assert_eq!(val.len(), 1);
+        assert_eq!(
+            val.first().unwrap().to_owned(),
+            Path::new("/var/lib/snapd/lib/gl").to_path_buf()
+        );
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_name() {
+        setup();
+        let val = crate::snap_name();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "hello-world");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_real_home() {
+        setup();
+        let val = crate::snap_real_home();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), Path::new("/home/user").to_path_buf());
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_revision() {
+        setup();
+        let val = crate::snap_revision();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "27");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_save_data() {
+        setup();
+        let val = crate::snap_save_data();
+        assert!(val.is_some());
+        assert_eq!(
+            val.unwrap(),
+            Path::new("/snap/hello-world/27/save").to_path_buf()
+        );
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_user_common() {
+        setup();
+        let val = crate::snap_user_common();
+        assert!(val.is_some());
+        assert_eq!(
+            val.unwrap(),
+            Path::new("/home/zyga/snap/hello-world/common").to_path_buf()
+        );
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_user_data() {
+        setup();
+        let val = crate::snap_user_data();
+        assert!(val.is_some());
+        assert_eq!(
+            val.unwrap(),
+            Path::new("/home/zyga/snap/hello-world/27").to_path_buf()
+        );
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_version() {
+        setup();
+        let val = crate::snap_version();
+        assert!(val.is_some());
+        assert_eq!(val.unwrap(), "v1.0.0");
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn snap_env() {
+        setup();
+        let val = crate::snap_env();
+        assert!(val.is_some());
+        if let Some(val) = val {
+            assert_eq!(val.len(), 14);
+            assert_eq!(val.get("SNAP").unwrap(), "/snap/hello-world/27");
+            assert_eq!(val.get("SNAP_ARCH").unwrap(), "armhf");
+            assert_eq!(
+                val.get("SNAP_COMMON").unwrap(),
+                "/var/snap/hello-world/common"
+            );
+            assert_eq!(val.get("SNAP_DATA").unwrap(), "/var/snap/hello-world/27");
+            assert_eq!(val.get("SNAP_INSTANCE_NAME").unwrap(), "hello-world");
+            assert_eq!(val.get("SNAP_INSTANCE_KEY").unwrap(), "foo");
+            assert_eq!(
+                val.get("SNAP_LIBRARY_PATH").unwrap(),
+                "/var/lib/snapd/lib/gl:"
+            );
+            assert_eq!(val.get("SNAP_NAME").unwrap(), "hello-world");
+            assert_eq!(val.get("SNAP_REAL_HOME").unwrap(), "/home/user");
+            assert_eq!(val.get("SNAP_REVISION").unwrap(), "27");
+            assert_eq!(
+                val.get("SNAP_SAVE_DATA").unwrap(),
+                "/snap/hello-world/27/save"
+            );
+            assert_eq!(
+                val.get("SNAP_USER_COMMON").unwrap(),
+                "/home/zyga/snap/hello-world/common"
+            );
+            assert_eq!(
+                val.get("SNAP_USER_DATA").unwrap(),
+                "/home/zyga/snap/hello-world/27"
+            );
+            assert_eq!(val.get("SNAP_VERSION").unwrap(), "v1.0.0");
+        }
+        unsetup();
+    }
+
+    #[test]
+    #[serial]
+    fn no_snap_env() {
+        unsetup();
+        let val = crate::snap_env();
+        assert!(val.is_none());
     }
 }
