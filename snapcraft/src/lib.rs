@@ -200,10 +200,8 @@ pub fn snap_version() -> Option<String> {
 
 /// A map of all of the environment variables that start with `SNAP_`
 pub fn snap_env() -> Option<HashMap<String, String>> {
-    let snap_map: HashMap<String, String> = env::vars()
-        .into_iter()
-        .filter(|(k, _)| k.starts_with("SNAP"))
-        .collect();
+    let snap_map: HashMap<String, String> =
+        env::vars().filter(|(k, _)| k.starts_with("SNAP")).collect();
     if snap_map.is_empty() {
         None
     } else {
@@ -235,7 +233,6 @@ mod tests {
 
     fn unsetup() {
         env::vars()
-            .into_iter()
             .filter(|(k, _)| k.starts_with("SNAP"))
             .for_each(|(k, _)| env::remove_var(k));
     }
