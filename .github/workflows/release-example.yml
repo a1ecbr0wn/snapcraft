@@ -1,5 +1,5 @@
 ---
-name: "tag-release-example"
+name: tag-release-example
 
 on:
   workflow_dispatch:
@@ -11,26 +11,26 @@ on:
 jobs:
   # Check the rust formatting
   format:
-    name: "format"
+    name: rust-format
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: "Rust Toolchain setup"
+      - name: Rust Toolchain setup
         uses: dtolnay/rust-toolchain@stable
         with:
             components: rustfmt
 
-      - name: "Format Check"
+      - name: Format Check
         uses: mbrobbel/rustfmt-check@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   # Build the Linux release artifacts
-  tag-release-example-linux:
-    name: "tag-release-example-linux"
-    runs-on: "ubuntu-latest"
+  tag-release-example:
+    name: tag-release example
+    runs-on: ubuntu-latest
     needs: format
     strategy:
       matrix:
@@ -39,10 +39,10 @@ jobs:
           - x86_64-unknown-linux-gnu
 
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: "Toolchain setup"
+      - name: Toolchain setup
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.RUST }}
@@ -57,16 +57,16 @@ jobs:
       - name: Build
         run: cross build --release --target=${{ matrix.TARGET }}
 
-      - name: "Package Release"
+      - name: Package Release
         run: tar cvzf snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz --directory=target/${{ matrix.TARGET }}/release snapcraft-rust-example
 
-      - name: "Generate SHA checksum"
+      - name: Generate SHA checksum
         run: shasum -a 256 -U snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz > snapcraft-rust-example-${{ matrix.TARGET }}.sha
 
-      - name: "Generate MD5 checksum"
+      - name: Generate MD5 checksum
         run: md5sum --tag snapcraft-rust-example-${{ matrix.TARGET }}.tar.gz > snapcraft-rust-example-${{ matrix.TARGET }}.md5
 
-      - name: "Upload the artifact with the workflow run"
+      - name: Upload the artifact with the workflow run
         uses: actions/upload-artifact@v3
         with:
           name: snapcraft-rust-example-${{ matrix.TARGET }}-${{ github.event.inputs.example_version }}
@@ -75,20 +75,20 @@ jobs:
 
   # Package the artifacts as a release package
   tag-release-example-package:
-    name: "tag-release-example-linux-package"
-    runs-on: "ubuntu-latest"
+    name: Package the tag-release example
+    runs-on: ubuntu-latest
     permissions: write-all
-    needs: [tag-release-example-linux]
+    needs: [tag-release-example]
 
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         
-      - name: "Download all release artifacts from the workflow"
+      - name: Download all release artifacts from the workflow
         uses: actions/download-artifact@v3
 
-      - name: "Create Example Release"
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Create Example Release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
           automatic_release_tag: "${{ github.event.inputs.example_version }}"
           title: "Release ${{ github.event.inputs.example_version }}"
@@ -100,11 +100,11 @@ jobs:
 
   # Kick off the workflow in the snap repo (a1ecbr0wn/snapcraft) that will generate the snapcraft yaml file 
   generate-snap:
-    name: "Initiate the generation of the snapcraft yaml file"
+    name: Initiate the generation of the snapcraft yaml file
     runs-on: ubuntu-latest
-    needs: [tag-release-example-linux]
+    needs: [tag-release-example]
     steps:
-      - name: "Repository Dispatch"
+      - name: Repository Dispatch
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.PAT }}

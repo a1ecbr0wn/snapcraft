@@ -1,5 +1,5 @@
 ---
-name: "tag-release-build"
+name: Release Binaries on Tag
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
 
 jobs:
   tag-release-lib-build:
-    name: "tag-release-lib-build"
-    runs-on: "ubuntu-latest"
+    name: Build tag as a release
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         rust: [stable]
@@ -18,10 +18,10 @@ jobs:
           - x86_64-unknown-linux-gnu
 
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: "Toolchain setup"
+      - name: Toolchain setup
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
@@ -33,18 +33,18 @@ jobs:
       - name: Test
         run: cargo test --release
 
-      - name: "Publish to crates.io"
+      - name: Publish to crates.io
         env:
           CARGO_REGISTRY_TOKEN: "${{ secrets.CRATES_TOKEN }}"
         run: cargo publish -p snapcraft
 
   # Kick off the workflow for the creation of the snapcraft example
   tag-release-example-init:
-    name: "Initiate release of the snapcraft example application"
+    name: Initiate release of the snapcraft example application
     runs-on: ubuntu-latest
     needs: [tag-release-lib-build]
     steps:
-      - name: "Repository Dispatch"
+      - name: Repository Dispatch
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.PAT }}
