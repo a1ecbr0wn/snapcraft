@@ -38,14 +38,15 @@ jobs:
 
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update snap to snapcraft-rust-example-${{ env.snap_version }}
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: snapcraft-rust-example-${{ env.snap_version }}
+          base: main
           delete-branch: true
           title: 'Update of snap for snapcraft-rust-example tag ${{ env.snap_version }}'
           body: |
