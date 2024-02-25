@@ -67,4 +67,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{env.GITHUB_REPOSITORY}}
           ref: refs/tags/${{ env.tag }}
-          workflow: release.yml
+          workflow: release-lib.yml
