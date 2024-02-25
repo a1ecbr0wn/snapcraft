@@ -46,6 +46,7 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: snapcraft-rust-example-${{ env.snap_version }}
+          base: main
           delete-branch: true
           title: 'Update of snap for snapcraft-rust-example tag ${{ env.snap_version }}'
           body: |
