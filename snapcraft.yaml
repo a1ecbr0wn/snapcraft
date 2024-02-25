@@ -2,7 +2,7 @@ title: snapcraft-rust-example
 name: rust-example
 type: app
 base: core20
-version: 'v0.3.0'
+version: 'v0.4.0'
 summary: Snapcraft Rust Example
 description: |
   Snapcraft example application built with the rust snapcraft crate that shows output from some of the crate's features.
@@ -24,7 +24,7 @@ license: Apache-2.0
 parts:
   rust-example:
     plugin: rust
-    source: https://github.com/a1ecbr0wn/snapcraft/archive/refs/tags/v0.3.0.tar.gz
+    source: https://github.com/a1ecbr0wn/snapcraft/archive/refs/tags/v0.4.0.tar.gz
     rust-path: ["snapcraft-rust-example"]
 
 apps:
