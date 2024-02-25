@@ -1,6 +1,6 @@
 [package]
 name = "snapcraft-rust-example"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 authors = ["Alec Brown <alec@noser.net>"]
 description = "Test application for snapcraft rust library."
@@ -19,4 +19,4 @@ path = "src/main.rs"
 name = "snapcraft-rust-example"
 
 [dependencies]
-snapcraft = { path = "../snapcraft", version = "0.3.1" }
+snapcraft = { path = "../snapcraft", version = "0.3.2" }
