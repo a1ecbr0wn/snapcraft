@@ -1,5 +1,5 @@
 ---
-name: tag-release-example
+name: Release Example on Tag
 
 on:
   workflow_dispatch:
