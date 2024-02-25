@@ -22,9 +22,11 @@ jobs:
             if grep -P '^v[0-9]+\.[0-9]+\.[0-9]+' <<< "${input_version}"; then
                 echo "tag=${input_version}" >> $GITHUB_ENV
                 echo "cargo_version=version = \"${input_version:1}\"" >> $GITHUB_ENV
+                echo "snapcraft_dep_version=snapcraft = { path = "../snapcraft", version = \"${input_version:1}\"}" >> $GITHUB_ENV
             elif grep -P '^[0-9]+\.[0-9]+\.[0-9]+' <<< "${input_version}"; then
                 echo "tag=v${input_version}" >> $GITHUB_ENV
                 echo "cargo_version=version = \"${input_version}\"" >> $GITHUB_ENV
+                echo "snapcraft_dep_version=snapcraft = { path = "../snapcraft", version = \"${input_version}\"}" >> $GITHUB_ENV
             else
                 false
             fi
@@ -47,7 +49,9 @@ jobs:
 
       - name: Replace the version number in the Cargo.toml files
         run: |
-            sed -i 's/^version = .*/${{ env.cargo_version }}/g' Cargo.toml
+            sed -i 's/^version = .*/${{ env.cargo_version }}/g' snapcraft/Cargo.toml
+            sed -i 's/^version = .*/${{ env.cargo_version }}/g' snapcraft-rust-example/Cargo.toml
+            sed -i 's/^snapcraft = { path = "../snapcraft", version = .*/${{ env.snapcraft_dep_version }}/g' snapcraft-rust-example/Cargo.toml
 
       - name: Add, push, tag, push
         run: |
