@@ -6,14 +6,12 @@ authors = ["Alec Brown <alec@noser.net>"]
 description = "Access to snapcraft environment."
 rust-version = "1.58"
 license = "Apache-2.0"
-repository = "https://github.com/a1ecbr0wn/snapcraft/snapcraft"
-homepage = "https://github.com/a1ecbr0wn/snapcraft/snapcraft"
+repository = "https://github.com/a1ecbr0wn/snapcraft/tree/main/snapcraft"
+homepage = "https://github.com/a1ecbr0wn/snapcraft/tree/main/snapcraft"
 documentation = "https://docs.rs/snapcraft"
 readme = "README.md"
 keywords = ["shell", "filesystem", "utility"]
 categories = ["filesystem", "os", "api-bindings"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
