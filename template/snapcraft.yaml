@@ -18,7 +18,8 @@ description: |
 grade: stable
 confinement: strict
 issues: https://github.com/a1ecbr0wn/snapcraft/issues
-website: https://github.com/a1ecbr0wn/snapcraft
+source-code: https://github.com/a1ecbr0wn/snapcraft
+website: https://a1ecbr0wn.com
 license: Apache-2.0
 
 parts:
