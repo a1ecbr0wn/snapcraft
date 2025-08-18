@@ -21,11 +21,7 @@ pub fn in_snap() -> bool {
 ///
 /// Typical value: `/snap/hello-world/27`
 pub fn snap() -> Option<String> {
-    if let Ok(snap) = env::var("SNAP") {
-        Some(snap)
-    } else {
-        None
-    }
+    env::var("SNAP").ok()
 }
 
 /// CPU architecture of the running system.
@@ -33,11 +29,7 @@ pub fn snap() -> Option<String> {
 ///
 /// Other values are: `i386`, `armhf`, `arm64`.
 pub fn snap_arch() -> Option<String> {
-    if let Ok(snap_arch) = env::var("SNAP_ARCH") {
-        Some(snap_arch)
-    } else {
-        None
-    }
+    env::var("SNAP_ARCH").ok()
 }
 
 /// Directory for system data that is common across revisions of a snap.
@@ -71,11 +63,7 @@ pub fn snap_data() -> Option<PathBuf> {
 ///
 /// Typical value: `hello-world`
 pub fn snap_instance_name() -> Option<String> {
-    if let Ok(snap_instance_name) = env::var("SNAP_INSTANCE_NAME") {
-        Some(snap_instance_name)
-    } else {
-        None
-    }
+    env::var("SNAP_INSTANCE_NAME").ok()
 }
 
 /// Instance key if one was set during installation or empty (snapd 2.36+).
@@ -83,11 +71,7 @@ pub fn snap_instance_name() -> Option<String> {
 ///
 /// Typical value: none
 pub fn snap_instance_key() -> Option<String> {
-    if let Ok(snap_instance_key) = env::var("SNAP_INSTANCE_KEY") {
-        Some(snap_instance_key)
-    } else {
-        None
-    }
+    env::var("SNAP_INSTANCE_KEY").ok()
 }
 
 /// Directory with additional system libraries. This variable is used internally by snapcraft.
@@ -112,11 +96,7 @@ pub fn snap_library_path() -> Option<Vec<PathBuf>> {
 ///
 /// Typical value: `hello-world`
 pub fn snap_name() -> Option<String> {
-    if let Ok(snap_name) = env::var("SNAP_NAME") {
-        Some(snap_name)
-    } else {
-        None
-    }
+    env::var("SNAP_NAME").ok()
 }
 
 /// The vanilla `HOME` environment variable before snapd-induced remapping, refer
@@ -139,11 +119,7 @@ pub fn snap_real_home() -> Option<PathBuf> {
 ///
 /// Typical value: `27` or `x1`
 pub fn snap_revision() -> Option<String> {
-    if let Ok(snap_revision) = env::var("SNAP_REVISION") {
-        Some(snap_revision)
-    } else {
-        None
-    }
+    env::var("SNAP_REVISION").ok()
 }
 
 /// This variable is only exposed on [Ubuntu Core](https://snapcraft.io/docs/glossary#heading--ubuntu-core) systems, and
@@ -191,11 +167,7 @@ pub fn snap_user_data() -> Option<PathBuf> {
 ///
 /// Typical value `6.3`
 pub fn snap_version() -> Option<String> {
-    if let Ok(snap_version) = env::var("SNAP_VERSION") {
-        Some(snap_version)
-    } else {
-        None
-    }
+    env::var("SNAP_VERSION").ok()
 }
 
 /// A map of all of the environment variables that start with `SNAP_`
