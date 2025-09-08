@@ -88,12 +88,11 @@ jobs:
         uses: actions/download-artifact@v4
 
       - name: Create Example Release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
         with:
-          automatic_release_tag: "${{ github.event.inputs.example_version }}"
-          title: "Release ${{ github.event.inputs.example_version }}"
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
+          tag_name: "${{ github.ref_name }}"
+          name: "Release ${{ github.ref_name }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
           files: |
             LICENSE
             **/snapcraft-rust-example-*.*
