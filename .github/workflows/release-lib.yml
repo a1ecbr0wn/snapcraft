@@ -31,10 +31,11 @@ jobs:
         run: cargo publish -p snapcraft
 
   # Kick off the workflow for the creation of the snapcraft example
-  tag-release-example-init:
+  release-tag-example-init:
     name: Initiate release of the snapcraft example application
     runs-on: ubuntu-latest
     needs: [publish-to-crates]
+
     steps:
       - name: Repository Dispatch
         uses: benc-uk/workflow-dispatch@v1

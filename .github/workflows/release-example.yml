@@ -28,15 +28,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   # Build the Linux release artifacts
-  tag-release-example:
+  release-tag-example:
     name: Tag Release Example
     runs-on: ubuntu-latest
     needs: format
-    strategy:
-      matrix:
-        RUST: [stable]
-        TARGET:
-          - x86_64-unknown-linux-gnu
 
     steps:
       - name: Checkout
@@ -45,8 +40,8 @@ jobs:
       - name: Toolchain setup
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.RUST }}
-          target: ${{ matrix.TARGET }}
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
 
       - name: Cross setup
         run: cargo install cross
@@ -74,11 +69,11 @@ jobs:
           retention-days: 1
 
   # Package the artifacts as a release package
-  tag-release-example-package:
+  release-tag-example-package:
     name: Package the tag-release example
     runs-on: ubuntu-latest
     permissions: write-all
-    needs: [tag-release-example]
+    needs: [release-tag-example]
 
     steps:
       - name: Checkout
@@ -113,7 +108,7 @@ jobs:
   generate-snap:
     name: Initiate the generation of the snapcraft yaml file
     runs-on: ubuntu-latest
-    needs: [tag-release-example]
+    needs: [release-tag-example]
     steps:
       - name: Repository Dispatch
         uses: benc-uk/workflow-dispatch@v1
