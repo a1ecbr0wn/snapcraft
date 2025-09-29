@@ -1,6 +1,7 @@
 # Build
 Cargo.lock
 /target
+CHANGELOG.md
 
 # IDE
 /.vscode

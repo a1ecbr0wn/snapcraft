@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       example_version:
-        description: 'Version number of release'
+        description: "Version number of release"
         required: true
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: Rust Toolchain setup
         uses: dtolnay/rust-toolchain@stable
         with:
-            components: rustfmt
+          components: rustfmt
 
       - name: Format Check
         uses: mbrobbel/rustfmt-check@master
@@ -50,7 +50,7 @@ jobs:
 
       - name: Cross setup
         run: cargo install cross
-    
+
       - name: Test
         run: cross test --target=${{ matrix.TARGET }}
 
@@ -83,13 +83,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+        with:
+          fetch-depth: 0
+
       - name: Download all release artifacts from the workflow
         uses: actions/download-artifact@v4
 
-      - name: Create Example Release
-        uses: softprops/action-gh-release@v1
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff
         with:
+          config: cliff.toml
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Create Example Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: CHANGELOG.md
           tag_name: "${{ github.ref_name }}"
           name: "Release ${{ github.ref_name }}"
           token: "${{ secrets.GITHUB_TOKEN }}"
@@ -97,7 +109,7 @@ jobs:
             LICENSE
             **/snapcraft-rust-example-*.*
 
-  # Kick off the workflow in the snap repo (a1ecbr0wn/snapcraft) that will generate the snapcraft yaml file 
+  # Kick off the workflow in the snap repo (a1ecbr0wn/snapcraft) that will generate the snapcraft yaml file
   generate-snap:
     name: Initiate the generation of the snapcraft yaml file
     runs-on: ubuntu-latest

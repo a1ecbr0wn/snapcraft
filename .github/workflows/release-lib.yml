@@ -8,14 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  tag-release-lib-build:
-    name: Build tag as a release
+  publish-to-crates:
+    name: Publish tag to crates.io
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust: [stable]
-        TARGET:
-          - x86_64-unknown-linux-gnu
 
     steps:
       - name: Checkout
@@ -24,11 +19,8 @@ jobs:
       - name: Toolchain setup
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.rust }}
-          target: ${{ matrix.TARGET }}
-
-      - name: Build
-        run: cargo build --release
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
 
       - name: Test
         run: cargo test --release
@@ -42,7 +34,7 @@ jobs:
   tag-release-example-init:
     name: Initiate release of the snapcraft example application
     runs-on: ubuntu-latest
-    needs: [tag-release-lib-build]
+    needs: [publish-to-crates]
     steps:
       - name: Repository Dispatch
         uses: benc-uk/workflow-dispatch@v1
