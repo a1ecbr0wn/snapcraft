@@ -4,36 +4,36 @@ name: CI Build
 on:
   push:
     branches:
-      - '**'
+      - "**"
     paths-ignore:
-      - '**/*.md'
-      - 'LICENSE'
-      - '**/snapcraft.yaml'
+      - "**/*.md"
+      - "LICENSE"
+      - "**/snapcraft.yaml"
   pull_request:
     branches:
       - main
     paths-ignore:
-      - '**/*.md'
-      - 'LICENSE'
-      - '**/snapcraft.yaml'
+      - "**/*.md"
+      - "LICENSE"
+      - "**/snapcraft.yaml"
   schedule:
-    - cron: '0 0 * * 1'
+    - cron: "0 0 * * 1"
   workflow_dispatch:
 
 env:
-  RUSTFLAGS: '--deny warnings'
+  RUSTFLAGS: "--deny warnings"
 
 jobs:
   format:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Rust Toolchain setup
         uses: dtolnay/rust-toolchain@stable
         with:
-            components: rustfmt
+          components: rustfmt
 
       - uses: mbrobbel/rustfmt-check@master
         with:
@@ -50,8 +50,8 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@v6
+
       - name: Toolchain setup
         uses: dtolnay/rust-toolchain@master
         with:
