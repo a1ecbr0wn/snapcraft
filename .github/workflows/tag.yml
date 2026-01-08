@@ -6,7 +6,7 @@ on:
     inputs:
       version:
         description: 'Tag to apply, in the form "v0.0.0"'
-        required: true
+        required: false
 
 jobs:
   tag-release:
@@ -37,10 +37,6 @@ jobs:
               echo "tag=v${input_version}" >> $GITHUB_ENV
               echo "cargo_version=version = \"${input_version}\"" >> $GITHUB_ENV
               echo "snapcraft_dep_version=snapcraft = { path = \"../snapcraft\", version = \"${input_version}\" }" >> $GITHUB_ENV
-          elif [ -z "${input_version}" ]; then
-              default_version=$(git-cliff --bumped-version)
-              echo "tag=v${default_version}" >> $GITHUB_ENV
-              echo "cargo_version=version = \"${default_version}\"" >> $GITHUB_ENV
           else
               false
           fi
